@@ -1,0 +1,8 @@
+<apex:page cache="false" readonly="true" sidebar="false" showHeader="false">
+<head>
+<script>
+licenseURL={!URLFOR($Resource.FFM_Maestro_License)};
+sid={!$Api.Session_ID};
+</script>
+</head>
+</apex:page>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConnectedApp xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>Maestro@Maestro.com</contactEmail>
+    <label>Maestro</label>
+    <oauthConfig>
+        <callbackUrl>maestro:callback</callbackUrl>
+        <consumerKey>3MVG9Rd3qC6oMalW9ps81zj0xMJKdQW.2ANkfuTdJw5TTOqlPRkM1ZqJ8OtgnQD1Vu1fh.1Da0iyUA5PqfqMT</consumerKey>
+        <isAdminApproved>false</isAdminApproved>
+        <isConsumerSecretOptional>false</isConsumerSecretOptional>
+        <isIntrospectAllTokens>false</isIntrospectAllTokens>
+        <scopes>Api</scopes>
+        <scopes>Web</scopes>
+        <scopes>RefreshToken</scopes>
+    </oauthConfig>
+    <oauthPolicy>
+        <ipRelaxation>ENFORCE</ipRelaxation>
+        <refreshTokenPolicy>infinite</refreshTokenPolicy>
+    </oauthPolicy>
+</ConnectedApp>

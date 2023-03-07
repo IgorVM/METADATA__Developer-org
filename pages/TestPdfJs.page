@@ -1,0 +1,8 @@
+<apex:page id="TestPdfJs" applyBodyTag="false" applyHtmlTag="true" standardStylesheets="false" showHeader="true" sidebar="false" controller="Controller_PdfJs" docType="html-5.0">
+    <apex:includeScript value="{!URLFOR($Resource.pdfjs, 'build/pdf.js')}"/>
+  <h1>Test PDF JS</h1>
+    <apex:form >
+        <apex:pageMessages />
+  		<apex:commandButton value="Generate PDF" action="{!GenReport}"/>
+    </apex:form>
+</apex:page>

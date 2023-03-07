@@ -1,0 +1,25 @@
+<apex:page id="FFM_SetCustomSettingsValues" showHeader="false" sidebar="false">
+    <head>
+		<title>Set Custom Settings Values</title>
+	</head>
+    <body>
+        <apex:form id="FFM_ShowPasswordForm">
+            <apex:pageBlock id="pbShowPasswordTime">
+                <apex:outputLabel id="olShowPasswordTime" value="Show Password Time: "/>
+                <apex:inputText id="tbShowPasswordTime" style="margin-top: -1px; margin-right: 4px;"/>
+                <apex:commandButton value="Save" id="saveButton" onclick="SavePasswordTime();return false;" style=""/>
+            </apex:pageBlock>
+            <script src="/soap/ajax/37.0/connection.js" type="text/javascript"></script>
+            <script src="/soap/ajax/37.0/apex.js" type="text/javascript"></script>
+            <script type="text/javascript">
+                function SavePassword(){
+                    var elemTxtName = document.getElementById('{!$Component.pbPassword.tbPassword}');
+                    var loginId = QueryString.loginId;
+                    sforce.connection.sessionId = '{!$Api.Session_ID}';
+                    sforce.apex.execute("FF_Maestro_Test/FFM_LoginAccessor","updatePasswordService",{loginId: loginId, newPassword: elemTxtName.value});
+                    this.close();
+                }
+            </script>
+        </apex:form>
+    </body>
+</apex:page>

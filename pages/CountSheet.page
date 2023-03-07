@@ -1,0 +1,32 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" standardController="Merchandise__c" recordSetVar="products">
+<apex:stylesheet value="{!URLFOR($Resource.styles, 'styles.css')}"/>
+
+  <h1>Inventory Count Sheet</h1>
+  <apex:form >
+      <apex:dataTable value="{!products}" var="pItem" rowClasses="odd,even">
+          <apex:column headerValue="Product">
+              <apex:outputText value="{!pItem.name}"></apex:outputText>
+          </apex:column>
+          <apex:column headerValue="Inventory">
+              <apex:outputField value="{!pItem.Quantity__c}">
+                  <apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+              </apex:outputField>
+          </apex:column>
+    
+      </apex:dataTable>
+      <apex:commandButton id="update" action="{!quicksave}" value="Update Counts" 
+  styleclass="updateButton"/>
+  <br/>
+  <br/>
+          <apex:commandButton id="override" value="Override Report"/>
+  <br/>
+  <br/>
+          <apex:commandButton id="terminate" value="Terminate"/>
+  <br/>
+  <br/>
+          <apex:commandButton id="update2" value="Update"/>
+  <br/>
+  <br/>
+
+  </apex:form>
+</apex:page>

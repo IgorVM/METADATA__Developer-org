@@ -1,0 +1,96 @@
+<apex:page id="FFM_InitialSetup" showHeader="false" sidebar="false">
+    <head>
+		<title>Initial Setup</title>
+	</head>
+    <body onload="LoadFunction()">
+        <apex:form id="FFM_ShowPasswordForm">
+            <apex:pageBlock id="pbShowPasswordTime">
+                <apex:outputLabel value="Please click on Setup button to set everything up for the Maestro	" id="setupLabel" style="display: none;"/>
+                <apex:commandButton value="Setup" id="setupButton" onclick="Setup();return false;" style="display: none;"/>
+                <apex:outputLabel value="Everything is set up already" id="everythingIsReady" style="display: none;"/>
+            </apex:pageBlock>
+            <script src="/soap/ajax/37.0/connection.js" type="text/javascript"></script>
+            <script src="/soap/ajax/37.0/apex.js" type="text/javascript"></script>
+            <script type="text/javascript">
+            	
+                function Setup(){
+                    createRemoteSites();
+                }
+            
+            	function LoadFunction(){
+                    sforce.connection.sessionId = '{!$Api.Session_ID}';
+                	var result = sforce.apex.execute("FF_Maestro_Test/FFM_LoginAccessor","checkSettingsValue", {});
+                    if(result[0] == 'true'){
+                    	document.getElementById("FFM_InitialSetup:FFM_ShowPasswordForm:pbShowPasswordTime:setupButton").style.display = "inline";
+                        document.getElementById("FFM_InitialSetup:FFM_ShowPasswordForm:pbShowPasswordTime:setupLabel").style.display = "inline";
+                    }
+                    else{
+                    	document.getElementById("FFM_InitialSetup:FFM_ShowPasswordForm:pbShowPasswordTime:everythingIsReady").style.display = "inline";
+                    }
+                }
+            
+                function createRemoteSites()
+                { 
+                    // Calls the Metdata API from JavaScript to create the Remote Site Setting to permit Apex callouts
+                    var binding = new XMLHttpRequest();
+                    var request = 
+                        '<?xml version="1.0" encoding="utf-8"?>' + 
+                        '<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'+
+                            '<env:Header>' + 
+                                '<urn:SessionHeader xmlns:urn="http://soap.sforce.com/2006/04/metadata">' + 
+                                    '<urn:sessionId>{!$Api.Session_ID}</urn:sessionId>' + 
+                                '</urn:SessionHeader>' + 
+                            '</env:Header>' + 
+                            '<env:Body>' +
+                                '<createMetadata xmlns="http://soap.sforce.com/2006/04/metadata">' + 
+                                    '<metadata xsi:type="RemoteSiteSetting">' + 
+                                        '<fullName>' + 'Salesforce_Production' + '</fullName>' +
+                                        '<description>URL for Salesforce Production</description>' + 
+                                        '<disableProtocolSecurity>false</disableProtocolSecurity>' + 
+                                        '<isActive>true</isActive>' + 
+                                        '<url>' + 'http://login.salesforce.com' + '</url>' +
+                                    '</metadata>' +
+                        			'<metadata xsi:type="RemoteSiteSetting">' + 
+                                        '<fullName>' + 'Salesforce_Sandbox' + '</fullName>' +
+                                        '<description>URL for Salesforce Sandbox</description>' + 
+                                        '<disableProtocolSecurity>false</disableProtocolSecurity>' + 
+                                        '<isActive>true</isActive>' + 
+                                        '<url>' + 'http://test.salesforce.com' + '</url>' +
+                                    '</metadata>' +
+                                '</createMetadata>' +
+                            '</env:Body>' + 
+                        '</env:Envelope>';
+                    var url = "{!$CurrentPage.URL}";
+                    var hostUrl = url.split('/apex/')[0];
+                    binding.open('POST', hostUrl + '/services/Soap/m/40.0');
+                    binding.setRequestHeader('SOAPAction','""');
+                    binding.setRequestHeader('Content-Type', 'text/xml');
+                    binding.onreadystatechange = 
+                        function() { 
+                            if(this.readyState==4) {
+                                var parser = new DOMParser(),
+                                	doc  = parser.parseFromString(this.response, 'application/xml'),
+                                    errors = doc.getElementsByTagName('errors'),
+                                	messageText = '',
+                                    error = '';
+                                for(var errorIdx = 0; errorIdx < errors.length; errorIdx++){
+                                    error = errors.item(errorIdx).getElementsByTagName('message').item(0).innerHTML;
+                                    if(!error.includes("This Remote Site Name already exists")){
+                                		messageText += errors.item(errorIdx).getElementsByTagName('message').item(0).innerHTML + '\n';
+                                    }
+                                }
+                                if(messageText != ''){
+                                	alert('Error occurred during creating Remote Site Settings:\n' + messageText);
+                                }
+                                sforce.connection.sessionId = '{!$Api.Session_ID}';
+                                var result = sforce.apex.execute("FF_Maestro_Test/FFM_LoginAccessor","setSettingsValue",{});
+                                alert(result[0] + "\nYou will be redirected to the home page");
+                                window.location.pathname = '/home/home.jsp';
+                            } 
+                        }
+                    binding.send(request);
+                }
+            </script>
+        </apex:form>
+    </body>
+</apex:page>
